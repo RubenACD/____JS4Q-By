@@ -1,12 +1,43 @@
-// Selectors
 
+// Navigation handling
+const nav = {
+    pages: [],
+    show: new Event('show'),
+    init: function(){
+        getTodos();
+        document.querySelectorAll('.nav-link').forEach((link)=>{
+            link.addEventListener('click', nav.tgt);
+        })
+    },
+    tgt: function(ev){
+        ev.preventDefault();
+        let curPage = ev.target.getAttribute('data-target');
+        document.querySelector('.active').classList.remove('active'); 
+        document.getElementById(curPage).classList.add('active');
+        switch(curPage){
+            case "weather-article":
+                getWeather();
+                break;
+            case "jokes-article":
+                loadJokes();
+                break;
+        }
+    }    
+}
+
+// Selectors
+const todoArticle = document.querySelector('.todo-article');
 const todoInput = document.querySelector('.todo-input');
 const todoButton = document.querySelector('.todo-button');
 const todoList = document.querySelector('.todo-list');
 const filterOption = document.querySelector(".filter-todo");
 
+const wKey = '88d9a36b3ef542a0b78141319242504'; // Weather API Key
+const weatherTable = document.querySelector('.weather-table');
+
 // Event Listeners
-document.addEventListener("DOMContentLoaded", getTodos);
+//document.addEventListener("DOMContentLoaded", getTodos);
+document.addEventListener("DOMContentLoaded", nav.init);
 todoButton.addEventListener('click', addTodo);
 todoList.addEventListener('click', deleteCheck);
 filterOption.addEventListener("click", filterTodo); 
@@ -25,7 +56,7 @@ function addTodo(event){
     newTodo.classList.add('todo-item');
     todoDiv.appendChild(newTodo);
 // Save ToDo to loal storage
-saveLocalTodos(todoInput.value);
+    saveLocalTodos(todoInput.value);
 // Checkmark button
     const completedButton = document.createElement('button')    ;
     completedButton.innerHTML = '<i class="fas fa-check"></i>';
@@ -143,4 +174,67 @@ function removeLocalTodos(todo){
     const todoIndex = todo.children[0].innerText;
     todos.splice(todos.indexOf(todoIndex), 1);
     localStorage.setItem("todos", JSON.stringify(todos));
+}
+
+// Navigation bar handling
+/* Open by setting the width of the side navigation to 250px */
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+  }
+  
+  /* Hide by setting the width of the side navigation to 0 */
+  function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+  }
+
+
+/* Load WeatherAPI for NYC */
+function getWeather () {
+    // Call the API
+    const fetchWeather = fetch("https://api.weatherapi.com/v1/current.json?key="+wKey+"&q=New York&aqi=no",);
+    fetchWeather
+    .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((wApi) => {
+
+// Remove any data present
+        while (weatherTable.firstChild){
+            weatherTable.removeChild(weatherTable.firstChild);
+        }
+// Add rows with selected data
+        addWeather('Local time:',wApi.location.localtime);
+        addWeather('Last updated:',wApi.current.last_updated);
+        addWeather('Feels like:',wApi.current.feelslike_c+"°C");
+        addWeather('Humidity:',wApi.current.humidity+"%");
+        addWeather('Wind direction:',wApi.current.wind_dir);
+      })
+      .catch((error) => {
+        console.error(`Could not get weather: ${error}`);
+      });
+}
+
+function addWeather(header, data) {
+     // Create row
+     const weatherRow = document.createElement("tr");
+     weatherRow.classList.add('weather-line');
+     // Create cells
+     const weatherHead = document.createElement("td");
+     weatherHead.innerText = header;
+     weatherHead.classList.add('weather-head');
+     weatherRow.appendChild(weatherHead);
+     const weatherData = document.createElement("td");
+     weatherData.innerText = data;
+     weatherData.classList.add('weather-data');
+     weatherRow.appendChild(weatherData);
+     // Append to UL    
+     weatherTable.appendChild(weatherRow);
+}
+
+/* Load Jokes API */
+function loadJokes () {
+
 }

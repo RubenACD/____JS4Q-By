@@ -15,6 +15,18 @@ header{
     font-size: 1.5rem;
 }
 
+/* Page handling */
+.page{
+    display: none;
+    position: fixed;
+    width: 100%;
+    min-height: 100%;
+}
+
+.active{
+    display: block;
+}
+
 header,
 form{
     min-height: 20vh;
@@ -44,8 +56,10 @@ form button:hover{
 
 .todo-container{
     display: flex;
+    height:50vh;    
     justify-content: center;
-    align-items: center;
+    align-items: top;
+    overflow-y: scroll;
 }
 
 .todo-list{
@@ -138,3 +152,71 @@ select{
     background: white;
     color: #ff6f47;
 }
+
+
+/* The side navigation menu */
+.nav-switch{
+    padding: 2rem;
+    font-size: 2.5rem;
+}
+.sidenav {
+    height: 100%; /* 100% Full-height */
+    width: 0; /* 0 width - change this with JavaScript */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Stay on top */
+    top: 0; /* Stay at the top */
+    left: 0;
+    background-color: #ff6f47; /* Orange*/
+    overflow-x: hidden; /* Disable horizontal scroll */
+    padding-top: 60px; /* Place content 60px from the top */
+    transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+  }
+  
+  /* The navigation menu links */
+  .sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: white;
+    display: block;
+    transition: 0.3s;
+  }
+  
+  /* When you mouse over the navigation links, change their color */
+  .sidenav a:hover {
+    color: #17ee22;
+  }
+  
+  /* Position and style the close button (top right corner) */
+  .sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+  }
+  
+  .weather-container, .weather-table {
+    width:60vh;
+    margin: auto;
+    display: block;
+    justify-content: center;
+  }
+
+  .weather-table {
+    background: #88a7b1;
+  }
+
+  .weather-line {
+    margin: auto;
+    padding: 1rem;
+  }
+
+  .weather-head{
+    width: 50vh;
+  }
+  .weather-data {
+    width: 50%;
+    text-align: right;  
+}
+    

@@ -11,26 +11,63 @@
     <title>Todo List</title>
 </head>
 <body>
-    <header>
-        <h1>Ruben's Todo List</h1>
-    </header>
-    <form>
-        <input type="text" class="todo-input">
-        <button class="todo-button" type="submit">
-            <i class="fas fa-plus-square"></i>
-        </button>
-        <div class="select">
-            <select name="todos" class="filter-todo">
-                <option value="all">All</option>
-                <option value="completed">Completed</option>
-                <option value="uncompleted">Uncompleted</option>
-            </select>
-        </div>
-    </form>
-    <div class="todo-container">
-        <ul class="todo-list"></ul>
+    <!-- Navigation menu -->
+    <div id="mySidenav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        <a href="#" class="nav-link" data-target="todo-article">Todo List</a>
+        <a href="#" class="nav-link" data-target="weather-article">Weather</a>
+        <a href="#" class="nav-link" data-target="jokes-article">Jokes</a>
     </div>
+      
+    <!-- Hamburger switch -->
+    <span class="nav-switch" onclick="openNav()"><i class="fa-solid fa-bars">&nbsp;</i></span>
 
+    <main>
+        <article class="page active" id="todo-article">
+            <header>
+                <h1>Ruben's Todo List</h1>
+            </header>
+
+            <form>
+                <input type="text" class="todo-input">
+                <button class="todo-button" type="submit">
+                    <i class="fas fa-plus-square"></i>
+                </button>
+                <div class="select">
+                    <select name="todos" class="filter-todo">
+                        <option value="all">All</option>
+                        <option value="completed">Completed</option>
+                        <option value="uncompleted">Uncompleted</option>
+                    </select>
+                </div>
+            </form>
+            <div class="todo-container">
+                <ul class="todo-list"></ul>
+            </div>
+        </article>
+        <article class="page" id="weather-article">
+            <header>
+                <h1>NYC Weather</h1>
+            </header>
+
+            <div class="weather-container">
+                <div id="weatherapi-weather-widget-3"></div>
+                <script type='text/javascript' src='https://www.weatherapi.com/weather/widget.ashx?loc=2618724&wid=3&tu=1&div=weatherapi-weather-widget-3' async></script>
+                <table class="weather-table">
+
+                </table>
+            </div>
+        </article>
+        <article class="page" id="jokes-article">
+            <header>
+                <h1>Smile a bit!</h1>
+            </header>
+
+            <div class="jokes-container">
+            </div>
+        </article>
+    </main>
     <script src="app.js"></script>
+    
 </body>
 </html>
