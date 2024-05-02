@@ -89,7 +89,13 @@ function deleteCheck (e){
 // Checkmark item
     if (item.classList[0] === "complete-btn") {
         const todo = item.parentElement;
+        const todoData = todo.firstChild.innerText;
+        let todoStatus = 1;
+        if (todo.classList[1] === "completed"){
+            todoStatus = 0;
+        }
         todo.classList.toggle("completed");
+        updateLocalTodos(todoData, todoStatus);
     }
 }
 
@@ -119,16 +125,37 @@ function filterTodo(e){
     })
 }
 
+function updateLocalTodos(todo, state){
+    let todos;
+    // Check - Available recs
+    if(localStorage.getItem('todos') === null){
+        todos = [];
+        todosStates = [];
+    }else{
+        todos = JSON.parse(localStorage.getItem('todos'));
+        todosStates = JSON.parse(localStorage.getItem('todosStates'));
+    }
+    let todosIndex = todos.indexOf(todo);
+    todos[todosIndex] = todo;
+    todosStates[todosIndex] = state;
+    localStorage.setItem('todos', JSON.stringify(todos));
+    localStorage.setItem('todosStates', JSON.stringify(todosStates));
+}
+
 function saveLocalTodos(todo){
     let todos;
     // Check - Available recs
     if(localStorage.getItem('todos') === null){
         todos = [];
+        todosStates = [];
     }else{
         todos = JSON.parse(localStorage.getItem('todos'));
+        todosStates = JSON.parse(localStorage.getItem('todosStates'));   
     }
     todos.push(todo);
+    todosStates.push(0);
     localStorage.setItem('todos', JSON.stringify(todos));
+    localStorage.setItem('todosStates', JSON.stringify(todosStates));
 }
 
 function getTodos(){
@@ -136,16 +163,22 @@ function getTodos(){
     // Check - Available recs
     if (localStorage.getItem('todos') === null) {
         todos = [];
+        todosStates = [];
     } else {
         todos = JSON.parse(localStorage.getItem('todos'));
+        todosStates = JSON.parse(localStorage.getItem('todosStates'));
     }
     todos.forEach(function(todo) {
         // Create Todo DIV
         const todoDiv = document.createElement("div");
         todoDiv.classList.add("todo");
+        let todosIndex = todos.indexOf(todo);
+        if (todosStates[todosIndex] === 1) {
+            todoDiv.classList.add("completed");
+        }
         // Create LI
         const newTodo = document.createElement("li");
-        newTodo.innerText = todo;
+        newTodo.innerText = todo[0];
         newTodo.classList.add('todo-item');
         todoDiv.appendChild(newTodo);
         // Checkmark button
@@ -168,12 +201,17 @@ function removeLocalTodos(todo){
     // Check - Available recs
     if (localStorage.getItem('todos') === null) {
         todos = [];
+        todosStates = [];
     } else {
         todos = JSON.parse(localStorage.getItem('todos'));
+        todosStates = JSON.parse(localStorage.getItem('todosStates'));
     }    
-    const todoIndex = todo.children[0].innerText;
-    todos.splice(todos.indexOf(todoIndex), 1);
+    const todoData = todo.children[0].innerText;
+    const todoIndex = todos.indexOf(todoData);
+    todos.splice(todoIndex, 1);
+    todosStates.splice(todoIndex, 1);
     localStorage.setItem("todos", JSON.stringify(todos));
+    localStorage.setItem("todosStates", JSON.stringify(todosStates));
 }
 
 // Navigation bar handling
