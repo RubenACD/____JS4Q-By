@@ -127,6 +127,7 @@ function filterTodo(e){
 
 function updateLocalTodos(todo, state){
     let todos;
+    let todosStates;
     // Check - Available recs
     if(localStorage.getItem('todos') === null){
         todos = [];
@@ -144,6 +145,7 @@ function updateLocalTodos(todo, state){
 
 function saveLocalTodos(todo){
     let todos;
+    let todosStates;
     // Check - Available recs
     if(localStorage.getItem('todos') === null){
         todos = [];
@@ -160,6 +162,7 @@ function saveLocalTodos(todo){
 
 function getTodos(){
     let todos;
+    let todosStates;
     // Check - Available recs
     if (localStorage.getItem('todos') === null) {
         todos = [];
@@ -198,6 +201,7 @@ function getTodos(){
 
 function removeLocalTodos(todo){
     let todos;
+    let todosStates;
     // Check - Available recs
     if (localStorage.getItem('todos') === null) {
         todos = [];
