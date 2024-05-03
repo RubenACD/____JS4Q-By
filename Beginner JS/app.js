@@ -1,5 +1,6 @@
 
 // Navigation handling
+var jokeTimer;
 const nav = {
     pages: [],
     show: new Event('show'),
@@ -10,6 +11,8 @@ const nav = {
         })
     },
     tgt: function(ev){
+        console.log("JokeTimer init: " +jokeTimer);
+        clearInterval(jokeTimer);
         ev.preventDefault();
         let curPage = ev.target.getAttribute('data-target');
         document.querySelector('.active').classList.remove('active'); 
@@ -20,6 +23,8 @@ const nav = {
                 break;
             case "jokes-article":
                 loadJokes();
+                jokeTimer = setInterval(loadJokes, 30000);
+                console.log("JokeTimer in switch: " + jokeTimer);
                 break;
         }
     }    
@@ -278,5 +283,28 @@ function addWeather(header, data) {
 
 /* Load Jokes API */
 function loadJokes () {
-
+    // Call the API
+    const fetchJoke = fetch("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit",);
+    fetchJoke
+    .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((jApi) => {
+        console.log(jApi);
+// Fill data    
+        document.getElementById("category").innerHTML=jApi.category;
+        if (jApi.type === "single"){
+            document.getElementById("setup").innerHTML="";
+            document.getElementById("pun").innerHTML=jApi.joke.replace(/\n/g, '<br>');
+        }else{
+            document.getElementById("setup").innerHTML=jApi.setup.replace(/\n/g, '<br>');
+            document.getElementById("pun").innerHTML=jApi.delivery.replace(/\n/g, '<br>');
+        }    
+              })
+      .catch((error) => {
+        console.error(`Could not get jokes: ${error}`);
+      });
 }

@@ -196,7 +196,7 @@ select{
     margin-left: 50px;
   }
   
-  .weather-container, .weather-table {
+  .weather-container, .weather-table, .jokes-container {
     width:60vh;
     margin: auto;
     display: block;
@@ -219,4 +219,13 @@ select{
     width: 50%;
     text-align: right;  
 }
-    
+
+.jokes-container{
+    background: #d4950d;
+    padding: 10px;
+    box-shadow: 4px 4px 4px #474a4b;
+}
+
+.setup {
+    font-weight: bold;
+}
