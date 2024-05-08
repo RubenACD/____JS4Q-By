@@ -186,7 +186,7 @@ function getTodos(){
         }
         // Create LI
         const newTodo = document.createElement("li");
-        newTodo.innerText = todo[0];
+        newTodo.innerText = todo;
         newTodo.classList.add('todo-item');
         todoDiv.appendChild(newTodo);
         // Checkmark button
