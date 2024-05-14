@@ -6,12 +6,13 @@ const nav = {
     show: new Event('show'),
     init: function(){
         getTodos();
+        console.log("Init");
         document.querySelectorAll('.nav-link').forEach((link)=>{
             link.addEventListener('click', nav.tgt);
         })
     },
     tgt: function(ev){
-        console.log("JokeTimer init: " +jokeTimer);
+        console.log("Tgt");
         clearInterval(jokeTimer);
         ev.preventDefault();
         let curPage = ev.target.getAttribute('data-target');
@@ -40,6 +41,7 @@ const filterOption = document.querySelector(".filter-todo");
 const wKey = '88d9a36b3ef542a0b78141319242504'; // Weather API Key
 const weatherTable = document.querySelector('.weather-table');
 
+console.log("Listeners");
 // Event Listeners
 //document.addEventListener("DOMContentLoaded", getTodos);
 document.addEventListener("DOMContentLoaded", nav.init);
@@ -50,6 +52,7 @@ filterOption.addEventListener("click", filterTodo);
 // Functions
 
 function addTodo(event){
+    console.log("addTodo");
 // Prevent form from submitting
     event.preventDefault();
 // Create Todo DIV
@@ -79,33 +82,37 @@ function addTodo(event){
 }
 
 function deleteCheck (e){
+    console.log("deleteCheck");
     const item = e.target;
+    if (item.classList) {
 // Delete item
-    if (item.classList[0] === "trash-btn") {
-        const todo = item.parentElement;
-        // Animation
-        todo.classList.add('fall');
-        removeLocalTodos(todo);
-        todo.addEventListener("transitionend", function(){
-            todo.remove();
-        })
-    }
+        if (item.classList[0] === "trash-btn") {
+            const todo = item.parentElement;
+            // Animation
+            todo.classList.add('fall');
+            removeLocalTodos(todo);
+            todo.addEventListener("transitionend", function(){
+                todo.remove();
+            })
+        }
 
 // Checkmark item
-    if (item.classList[0] === "complete-btn") {
-        const todo = item.parentElement;
-        const todoData = todo.firstChild.innerText;
-        let todoStatus = 1;
-        if (todo.classList[1] === "completed"){
-            todoStatus = 0;
+        if (item.classList[0] === "complete-btn") {
+            const todo = item.parentElement;
+            const todoData = todo.firstChild.innerText;
+            let todoStatus = 1;
+            if (todo.classList[1] === "completed"){
+                todoStatus = 0;
+            }
+            todo.classList.toggle("completed");
+            updateLocalTodos(todoData, todoStatus);
         }
-        todo.classList.toggle("completed");
-        updateLocalTodos(todoData, todoStatus);
     }
 }
 
 // Filter
 function filterTodo(e){
+    console.log("filterTodo");
     const todos = todoList.childNodes;
     todos.forEach(function(todo){
         switch(e.target.value){
@@ -131,6 +138,7 @@ function filterTodo(e){
 }
 
 function updateLocalTodos(todo, state){
+    console.log("updateLocalTodos");
     let todos;
     let todosStates;
     // Check - Available recs
@@ -149,15 +157,25 @@ function updateLocalTodos(todo, state){
 }
 
 function saveLocalTodos(todo){
+    console.log("saveLocalTodos");
     let todos;
     let todosStates;
     // Check - Available recs
-    if(localStorage.getItem('todos') === null){
-        todos = [];
-        todosStates = [];
-    }else{
-        todos = JSON.parse(localStorage.getItem('todos'));
-        todosStates = JSON.parse(localStorage.getItem('todosStates'));   
+    if (localStorage.getItem('todos') === null || localStorage.getItem('todosStates') === null) {
+        console.log("No recs");
+          todos = [];
+          todosStates = [];
+    } else {
+        try{
+            todos = JSON.parse(localStorage.getItem('todos'));
+        }catch (err){
+            console.log("todos parse error: "+err);
+        }
+        try{
+            todosStates = JSON.parse(localStorage.getItem('todosStates'));
+        }catch(err) {
+          console.log("todosStates parse error: "+err);
+        }    
     }
     todos.push(todo);
     todosStates.push(0);
@@ -166,45 +184,60 @@ function saveLocalTodos(todo){
 }
 
 function getTodos(){
+    console.log("getTodos");
     let todos;
     let todosStates;
     // Check - Available recs
-    if (localStorage.getItem('todos') === null) {
-        todos = [];
-        todosStates = [];
+    if (localStorage.getItem('todos') === null || localStorage.getItem('todosStates') === null) {
+        console.log("No recs");
+          todos = [];
+          todosStates = [];
     } else {
-        todos = JSON.parse(localStorage.getItem('todos'));
-        todosStates = JSON.parse(localStorage.getItem('todosStates'));
-    }
-    todos.forEach(function(todo) {
-        // Create Todo DIV
-        const todoDiv = document.createElement("div");
-        todoDiv.classList.add("todo");
-        let todosIndex = todos.indexOf(todo);
-        if (todosStates[todosIndex] === 1) {
-            todoDiv.classList.add("completed");
+        try{
+            todos = JSON.parse(localStorage.getItem('todos'));
+        }catch (err){
+            console.log("todos parse error: "+err);
         }
-        // Create LI
-        const newTodo = document.createElement("li");
-        newTodo.innerText = todo;
-        newTodo.classList.add('todo-item');
-        todoDiv.appendChild(newTodo);
-        // Checkmark button
-        const completedButton = document.createElement('button')    ;
-        completedButton.innerHTML = '<i class="fas fa-check"></i>';
-        completedButton.classList.add("complete-btn");
-        todoDiv.appendChild(completedButton);
-        // Trash button
-        const trashButton = document.createElement('button')    ;
-        trashButton.innerHTML = '<i class="fas fa-trash"></i>';
-        trashButton.classList.add("trash-btn");
-        todoDiv.appendChild(trashButton);
-        // Append to UL    
-        todoList.appendChild(todoDiv);
+        try{
+            todosStates = JSON.parse(localStorage.getItem('todosStates'));
+        }catch(err) {
+          console.log("todosStates parse error: "+err);
+        }    
+    }
+    if (!Array.isArray(todos) || !Array.isArray(todosStates)){
+        console.log("Wrong data - no array(s) present");
+    }else{
+        todos.forEach(function(todo) {
+            // Create Todo DIV
+            const todoDiv = document.createElement("div");
+            todoDiv.classList.add("todo");
+            let todosIndex = todos.indexOf(todo);
+            if (todosStates[todosIndex] === 1) {
+                todoDiv.classList.add("completed");
+            }
+            // Create LI
+            const newTodo = document.createElement("li");
+            newTodo.innerText = todo;
+            newTodo.classList.add('todo-item');
+            todoDiv.appendChild(newTodo);
+            // Checkmark button
+            const completedButton = document.createElement('button')    ;
+            completedButton.innerHTML = '<i class="fas fa-check"></i>';
+            completedButton.classList.add("complete-btn");
+            todoDiv.appendChild(completedButton);
+            // Trash button
+            const trashButton = document.createElement('button')    ;
+            trashButton.innerHTML = '<i class="fas fa-trash"></i>';
+            trashButton.classList.add("trash-btn");
+            todoDiv.appendChild(trashButton);
+            // Append to UL    
+            todoList.appendChild(todoDiv);
     });
+    }
 }
 
 function removeLocalTodos(todo){
+    console.log("removeLocalTodos");
     let todos;
     let todosStates;
     // Check - Available recs
@@ -226,17 +259,20 @@ function removeLocalTodos(todo){
 // Navigation bar handling
 /* Open by setting the width of the side navigation to 250px */
 function openNav() {
+    console.log("openNav");
     document.getElementById("mySidenav").style.width = "250px";
   }
   
   /* Hide by setting the width of the side navigation to 0 */
   function closeNav() {
+    console.log("closeNav");
     document.getElementById("mySidenav").style.width = "0";
   }
 
 
 /* Load WeatherAPI for NYC */
 function getWeather () {
+    console.log("getWeather");
     // Call the API
     const fetchWeather = fetch("https://api.weatherapi.com/v1/current.json?key="+wKey+"&q=New York&aqi=no",);
     fetchWeather
@@ -283,6 +319,7 @@ function addWeather(header, data) {
 
 /* Load Jokes API */
 function loadJokes () {
+    console.log("loadJokes");
     // Call the API
     const fetchJoke = fetch("https://v2.jokeapi.dev/joke/Any?blacklistFlags=nsfw,religious,political,racist,sexist,explicit",);
     fetchJoke
